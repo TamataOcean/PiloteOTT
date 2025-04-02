@@ -1,0 +1,18 @@
+{
+  "conf": {
+    "Tide_Source": "/home/bibi/code/pilotOTT/TideTable.json",
+    "pompes": [
+      {"ID": "Pompe1", "description": "Remplissage bassin de test", "gpio": 17, "etat_initial": "OFF"},
+      {"ID": "Pompe2", "description": "Vidage bassin de test", "gpio": 18, "etat_initial": "OFF"},
+      {"ID": "Pompe3", "description": "Remplissage bassin de référence", "gpio": 27, "etat_initial": "OFF"},
+      {"ID": "Pompe4", "description": "Vidage bassin de référence", "gpio": 22, "etat_initial": "OFF"},
+      {"ID": "Pompe5", "description": "Remplissage citerne", "gpio": 23, "etat_initial": "OFF"}
+    ],
+    "bassins" : [
+      {"ID": "Bassin_Test", "NivEau_Max":115, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe1", "ID_POMPE_VIDAGE":"Pompe2" },
+      {"ID": "Bassin_Reference", "NivEau_Max":115, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe3", "ID_POMPE_VIDAGE":"Pompe4"},
+      {"ID": "Citerne", "NivEau_Max":115, "NivEau_Min":15, "TemperatureMin":15, "ID_POMPE_REMPLISSAGE":"Pompe5", "ID_POMPE_VIDAGE":"Pompe1"}
+    ]
+  }
+    
+}
