@@ -1,6 +1,6 @@
 {
   "conf": {
-    "Tide_Source": "/home/bibi/code/pilotOTT/TideTable.json",
+    "Tide_Source": "/home/bibi/code/PiloteOTT/systools/tides/LaRochelle_tides.json",
     "pompes": [
       {"ID": "Pompe1", "description": "Remplissage bassin de test", "gpio": 17, "etat_initial": "OFF"},
       {"ID": "Pompe2", "description": "Vidage bassin de test", "gpio": 18, "etat_initial": "OFF"},
