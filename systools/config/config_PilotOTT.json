@@ -9,9 +9,11 @@
       {"ID": "Pompe5", "description": "Remplissage citerne", "gpio": 23, "etat_initial": "OFF"}
     ],
     "bassins" : [
-      {"ID": "Bassin_Test", "NivEau_Max":115, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe1", "ID_POMPE_VIDAGE":"Pompe2" },
-      {"ID": "Bassin_Reference", "NivEau_Max":115, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe3", "ID_POMPE_VIDAGE":"Pompe4"},
-      {"ID": "Citerne", "NivEau_Max":115, "NivEau_Min":15, "TemperatureMin":15, "ID_POMPE_REMPLISSAGE":"Pompe5", "ID_POMPE_VIDAGE":"Pompe1"}
+      {"ID": "Bassin_Test", "NivEau_Max":100, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe1", "ID_POMPE_VIDAGE":"Pompe2" },
+      {"ID": "Bassin_Reference", "NivEau_Max":100, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe3", "ID_POMPE_VIDAGE":"Pompe4"}
+    ],
+    "citerne": [
+      {"ID": "Citerne", "NivEau_Max":200, "NivEau_Min":0, "TemperatureMin":15, "ID_POMPE_REMPLISSAGE":"Pompe5", "ID_POMPE_VIDAGE":"Pompe1"}
     ]
   }
     
