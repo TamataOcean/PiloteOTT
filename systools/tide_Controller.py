@@ -141,7 +141,7 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
                     # GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
                     message.append({"ID": bassin["ID_POMPE_REMPLISSAGE"], "pump_State": 0})
                     message.append({"ID": bassin["ID_POMPE_VIDAGE"], "pump_State": 1})
-                    
+
                 # Control du Niveau minimum 
                 elif niveau_actuel <= bassin["NivEau_Min"]:
                     print(f"⚠️ {bassin_id} sous son niveau minimal, activation pompe remplissage / arrêt pompe vidage")
@@ -150,6 +150,14 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
                     message.append({"ID": bassin["ID_POMPE_REMPLISSAGE"], "pump_State": 1})
                     message.append({"ID": bassin["ID_POMPE_VIDAGE"], "pump_State": 0})
                 
+                # Control pour arreter de remplir quand le NivEau_Haut est atteind
+                elif niveau_actuel >= bassin["NivEau_Haut"]:
+                    print(f"🟢 {bassin_id} En marée montante, niveau haut atteind, arret pompe vidage / arret pompe remplissage")
+                    # GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
+                    # GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
+                    message.append({"ID": bassin["ID_POMPE_VIDAGE"], "pump_State": 0})
+                    message.append({"ID": bassin["ID_POMPE_REMPLISSAGE"], "pump_State": 0})
+
                 # Conditition de remplissage jusqu'au niveau max... 
                 else:
                     print(f"🟢 {bassin_id} En marée montante, activation pompe remplissage / arret pompe vidage")
@@ -178,6 +186,13 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
                     # GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
                     message.append({"ID": bassin["ID_POMPE_VIDAGE"], "pump_State": 0})
                     message.append({"ID": bassin["ID_POMPE_REMPLISSAGE"], "pump_State": 1})
+                
+                elif niveau_actuel < bassin["NivEau_Bas"]:
+                    print(f"🟢 {bassin_id} En marée descendante, niveau bas atteind, arret pompe vidage / arret pompe remplissage")
+                    # GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
+                    # GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
+                    message.append({"ID": bassin["ID_POMPE_VIDAGE"], "pump_State": 0})
+                    message.append({"ID": bassin["ID_POMPE_REMPLISSAGE"], "pump_State": 0})
 
                 else:
                     print(f"🟢 {bassin_id} En marée descendante, activation pompe vidage / arret pompe remplissage")
