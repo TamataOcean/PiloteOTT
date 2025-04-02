@@ -1,0 +1,14 @@
+[Unit]
+Description=PiloteOTT-Project Server
+After=piloteOTT.service
+
+[Service]
+ExecStart=/usr/bin/python3 tide_Controller.py
+Restart=always
+User=pi
+WorkingDirectory=/home/pi/code/piloteOTT/systools/
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
