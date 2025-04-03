@@ -12,13 +12,16 @@ MQTT_BROKER =       "localhost"
 MQTT_PUMP_STATE =   "server/pumpState"
 MQTT_LOG_GENERAL =  "server/log"
 MQTT_TIDE_STATE =   "server/tideState"
-MQTT_DATA =         "input/data"
+
+MQTT_DATA =         "input/data/#"
 MQTT_ORDERS =       "input/orders"
 MQTT_PORT =         1883
 
 # Chargement du fichier de configuration
 CONFIG_PATH = "./config/config_PilotOTT.json"
 MAREES_PATH = "./tides/marees.json"  # Chemin vers le fichier JSON des marées
+
+global etat_pompes_local
 
 def charger_configuration():
     try:
@@ -56,7 +59,6 @@ def convertir_marees(marees):
 # Initialisation des GPIO
 # -----------------------
 def initialiser_pompes():
-    global etat_pompes_local
     message = []
 
     for pompe in config_pilotOTT["pompes"]:
@@ -151,6 +153,7 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
     message = []
     # On récupérer la marée ( montante / descendante )
     type_maree = getMaree()
+    print(f"typeMaree = {type_maree}")
 
     # Appliquer les actions de contrôle en fonction du type de marée
     if type_maree == "PM":  # Marée montante
@@ -254,7 +257,8 @@ def on_message(client, userdata, msg):
     try:
         payload = json.loads(msg.payload.decode())
 
-        if msg.topic == MQTT_DATA:
+        # if msg.topic == MQTT_DATA:
+        if msg.topic.startswith("input/data/"):
             id_bassin = payload.get("ID_BASSIN")
             niveau_eau = payload.get("Niv_Eau")
             if id_bassin and niveau_eau is not None:
