@@ -11,6 +11,7 @@ import bisect
 MQTT_BROKER =       "localhost"
 MQTT_PUMP_STATE =   "server/pumpState"
 MQTT_LOG_GENERAL =  "server/log"
+MQTT_TIDE_STATE =   "server/tideState"
 MQTT_DATA =         "input/data"
 MQTT_ORDERS =       "input/orders"
 MQTT_PORT =         1883
@@ -104,6 +105,8 @@ def getMaree():
     now = datetime.now()
     print(f"Heure actuelle : {now}")
 
+    message = []
+
     # Trouver les marées avant et après l'heure actuelle
     prev_maree = None
     next_maree = None
@@ -117,14 +120,22 @@ def getMaree():
     if prev_maree and next_maree:
         # Déterminer si la marée est montante ou descendante
         if prev_maree["marée"] == "BM" and next_maree["marée"] == "PM":
-            print("La marée est montante (PM).")
+            # print("La marée est montante (PM).")
             type_maree = "PM"
         elif prev_maree["marée"] == "PM" and next_maree["marée"] == "BM":
-            print("La marée est descendante (BM).")
+            # print("La marée est descendante (BM).")
             type_maree = "BM"
         else:
-            print("Erreur dans les données des marées.")
+            print("❌ Erreur dans les données des marées.")
             return None
+        
+        # Création du message JSON
+        message = {"typeMaree": type_maree}
+        json_message = json.dumps(message)
+        # Publication MQTT
+        client.publish(MQTT_TIDE_STATE, json_message)
+        print(f"📡 Envoi état marée : {json_message}")
+
         return type_maree
     
     else:
