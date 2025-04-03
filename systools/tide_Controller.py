@@ -132,7 +132,11 @@ def getMaree():
             return None
         
         # Création du message JSON
-        message = {"typeMaree": type_maree}
+        # Récupérer l'heure de la prochaine marée
+        next_maree_time = next_maree["datetime"].strftime("%H:%M:%S")  # Format de l'heure HH:MM:SS
+
+
+        message = {"typeMaree": type_maree, "nextTide": next_maree_time }
         json_message = json.dumps(message)
         # Publication MQTT
         client.publish(MQTT_TIDE_STATE, json_message)

@@ -737,7 +737,7 @@
         "type": "function",
         "z": "tab1",
         "name": "function 3",
-        "func": "var payload = JSON.parse(msg.payload);\nvar typeMaree = payload.typeMaree;\n\nvar msgFormatted = { payload: \"🌊 Marée actuelle : \" + ((typeMaree === \"BM\") ? \"Marée montante\" : \"Marée descendante\") };\nreturn msgFormatted;",
+        "func": "var payload = JSON.parse(msg.payload);\nvar typeMaree = payload.typeMaree;\nvar nextTide = payload.nextTide;\n\nvar msgFormatted = { payload: \"🌊 Marée actuelle : \" + ((typeMaree === \"BM\") ? \"Marée descendante \" : \"Marée montante\") + \" / \"+ typeMaree + \" à \" + nextTide };\nreturn msgFormatted;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
