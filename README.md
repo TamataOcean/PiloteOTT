@@ -1,7 +1,7 @@
 # PiloteOTT
 Dispositif permettant de comparer l'évolution du biofilm sur l'estran dans des conditions de réchauffement climatique à 2,5°C.
 
-![image](https://github.com/user-attachments/assets/e6b59961-13de-41b3-9608-c83b2e5d2e04)
+![image](https://github.com/user-attachments/assets/e5ba4adc-c569-4e79-bd71-6a7da6ab3cf3)
 
 # Installation
 
