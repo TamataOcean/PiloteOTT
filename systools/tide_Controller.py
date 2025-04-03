@@ -1,4 +1,5 @@
 # import RPi.GPIO as GPIO
+import threading
 import time
 import requests
 import json
@@ -50,7 +51,9 @@ def convertir_marees(marees):
         })
     return marees_converties
 
+# -----------------------
 # Initialisation des GPIO
+# -----------------------
 def initialiser_pompes():
     global etat_pompes_local
     message = []
@@ -66,7 +69,9 @@ def initialiser_pompes():
     client.publish(MQTT_PUMP_STATE, json_message)
     client.publish(MQTT_LOG_GENERAL, json.dumps({"event": "Etat des pompes au démarrage", "data": message}))
 
+# ------------------------------------------
 # Contrôle des pompes en fonction des marées
+# ------------------------------------------
 def controler_pompes(type_maree):
     print("Function Controler_Pompes begin")
     etats_pompes = {
@@ -91,6 +96,9 @@ def controler_pompes(type_maree):
     json_message = json.dumps(message)
     client.publish(MQTT_PUMP_STATE, json_message)
 
+# ---------------------------------------------------------------------
+# Marée Montante / Descendante en fonction de la date et heure actuelle
+# ---------------------------------------------------------------------
 def getMaree():
     # Récupérer l'heure actuelle
     now = datetime.now()
@@ -122,6 +130,9 @@ def getMaree():
     else:
         print(f"❌ Aucune donnée de marée trouvée pour l'heure actuelle ({now}). Impossible de déterminer l'état de la marée.")
 
+# ------------------------------------------------
+# GESTION DES POMPES / HEURE de marée et Niv EAU
+# ------------------------------------------------
 def controler_pompes_niveau(bassin_id, niveau_actuel):
 
     print(f"Bassin : {bassin_id} / niveau actuelle : {niveau_actuel} ")
@@ -259,6 +270,16 @@ def on_message(client, userdata, msg):
     except json.JSONDecodeError:
         print("Erreur JSON dans le message MQTT")
 
+# -----------------------------
+# Communication des states 
+# -----------------------------
+def envoyer_etat_periodique(delay):
+    # """Envoie régulièrement l'état des pompes toutes les X secondes."""
+    print("Démarrage Envoi etat périodique")
+    while True:
+        envoyer_etat_pompes()
+        time.sleep(delay)  # Envoi toutes les 60 secondes (modifiable)
+
 # ------------------
 # Exécution
 # ------------------
@@ -273,10 +294,15 @@ try:
     # Stockage local des états des pompes pour éviter les actions inutiles
     etat_pompes_local = {}
 
-    marees = charger_marees()  # Charger les données des marées
-    marees_converties = convertir_marees(marees)  # Convertir les marées en objets datetime
+    # marees = charger_marees()  # Charger les données des marées
+    marees_converties = convertir_marees(charger_marees())  # Convertir les marées en objets datetime
     initialiser_pompes()
+
+    # Démarrage du thread d'envoi périodique ( toutes les 60 sec )
+    threading.Thread(target=envoyer_etat_periodique,args=(60,), daemon=True).start()
+    
     client.loop_forever()
+    
 
 except KeyboardInterrupt:
     print("🛑 Arrêt du script.")
