@@ -9,6 +9,7 @@ import bisect
 
 # Configuration MQTT
 MQTT_BROKER =       "localhost"
+# MQTT_BROKER = "host.docker.internal" # Version Dockerisé 
 MQTT_PUMP_STATE =   "server/pumpState"
 MQTT_LOG_GENERAL =  "server/log"
 MQTT_TIDE_STATE =   "server/tideState"
@@ -22,6 +23,7 @@ CONFIG_PATH = "./config/config_PilotOTT.json"
 MAREES_PATH = "./tides/marees.json"  # Chemin vers le fichier JSON des marées
 
 global etat_pompes_local
+data_capteurs = {}
 
 def charger_configuration():
     try:
@@ -265,6 +267,17 @@ def on_message(client, userdata, msg):
         if msg.topic.startswith("input/data/"):
             id_bassin = payload.get("ID_BASSIN")
             niveau_eau = payload.get("Niv_Eau")
+            water_temp = payload.get("WaterTemp")
+            air_temp = payload.get("AirTemp")
+
+            # Stockage des dernières valeurs des capteurs 
+            data_capteurs[id_bassin] = {
+                "Niv_Eau": niveau_eau,
+                "WaterTemp": water_temp,
+                "AirTemp": air_temp
+            }
+
+            print(f"Data Capteur pour {id_bassin} = {data_capteurs[id_bassin]}")
             if id_bassin and niveau_eau is not None:
                 controler_pompes_niveau(id_bassin, niveau_eau)
 
