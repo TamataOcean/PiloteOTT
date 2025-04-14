@@ -161,8 +161,17 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
     type_maree = getMaree()
     print(f"typeMaree = {type_maree}")
 
+    # Check temperature citerne VS tempertaure source
+    Source_Temp = data_capteurs.get("Source", {}).get("WaterTemp")
+    Citerne_Temp = data_capteurs.get("Citerne", {}).get("WaterTemp")
+
+    if Citerne_Temp >= Source_Temp + 2.5:
+        print("on peut remplir le test, la température est supérieur de 2,5°C ")
+    else:
+        print(f"On ne peut pas remplir test, température Citerne {Citerne_Temp} VS Source {Source_Temp}")
+
     # Appliquer les actions de contrôle en fonction du type de marée
-    if type_maree == "PM":  # Marée montante
+    if type_maree == "PM" and (Citerne_Temp >= (Source_Temp + 2.5)):  # Marée montante
         # On remplit les 2 bassins REF et TEST jusqu'au niveau max de chaque bassin
         for bassin in config_pilotOTT["bassins"]:
             if bassin["ID"] == bassin_id:            
