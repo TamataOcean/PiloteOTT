@@ -28,23 +28,6 @@
         ]
     },
     {
-        "id": "influxdb-out",
-        "type": "influxdb out",
-        "z": "tab1",
-        "influxdb": "70ab23cc3edcb2b6",
-        "name": "Enregistrer dans InfluxDB",
-        "measurement": "bassin_data",
-        "precision": "ms",
-        "retentionPolicy": "",
-        "database": "bassins",
-        "retentionPolicyV18Flux": "",
-        "org": "",
-        "bucket": "",
-        "x": 850,
-        "y": 40,
-        "wires": []
-    },
-    {
         "id": "fba489446c98f4b9",
         "type": "inject",
         "z": "tab1",
@@ -99,7 +82,7 @@
         "type": "debug",
         "z": "tab1",
         "name": "debug 6",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -164,23 +147,6 @@
         ]
     },
     {
-        "id": "b12d7169cd01eb59",
-        "type": "influxdb out",
-        "z": "tab1",
-        "influxdb": "70ab23cc3edcb2b6",
-        "name": "Enregistrer dans InfluxDB",
-        "measurement": "bassin_data",
-        "precision": "ms",
-        "retentionPolicy": "",
-        "database": "bassins",
-        "retentionPolicyV18Flux": "",
-        "org": "",
-        "bucket": "",
-        "x": 850,
-        "y": 720,
-        "wires": []
-    },
-    {
         "id": "71e611688f9dc254",
         "type": "mqtt in",
         "z": "tab1",
@@ -197,44 +163,6 @@
         "wires": [
             [
                 "b07a78ea7ad252d5"
-            ]
-        ]
-    },
-    {
-        "id": "c2dea98d846a3e37",
-        "type": "ui_dropdown",
-        "z": "tab1",
-        "name": "Source Info marée",
-        "label": "Source Info marée",
-        "tooltip": "",
-        "place": "1",
-        "group": "a233d3529c7149e2",
-        "order": 1,
-        "width": "5",
-        "height": "1",
-        "passthru": true,
-        "multiple": false,
-        "options": [
-            {
-                "label": "Fichier JSON local",
-                "value": "/home/bibi/code/pilotOTT/TideTable.json",
-                "type": "str"
-            },
-            {
-                "label": "Shom ",
-                "value": "https://maree.shom.fr/harbor/LA_ROCHELLE-PALLICE/wl/0?date=2025-01-13&utc=standard",
-                "type": "str"
-            }
-        ],
-        "payload": "",
-        "topic": "topic",
-        "topicType": "msg",
-        "className": "",
-        "x": 110,
-        "y": 380,
-        "wires": [
-            [
-                "0b436fcf9bb04e97"
             ]
         ]
     },
@@ -257,32 +185,6 @@
         ]
     },
     {
-        "id": "2635f8ab4cb1f864",
-        "type": "ui_text_input",
-        "z": "tab1",
-        "name": "",
-        "label": "Seuil déclenchement pompe1",
-        "tooltip": "",
-        "group": "a233d3529c7149e2",
-        "order": 2,
-        "width": "6",
-        "height": "1",
-        "passthru": true,
-        "mode": "text",
-        "delay": 300,
-        "topic": "topic",
-        "sendOnBlur": true,
-        "className": "",
-        "topicType": "msg",
-        "x": 150,
-        "y": 440,
-        "wires": [
-            [
-                "bea7555bc2f824e3"
-            ]
-        ]
-    },
-    {
         "id": "bea7555bc2f824e3",
         "type": "function",
         "z": "tab1",
@@ -298,34 +200,6 @@
         "y": 440,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "9d3589f684643ce9",
-        "type": "ui_button",
-        "z": "tab1",
-        "name": "Générer Fichier JSON",
-        "group": "a233d3529c7149e2",
-        "order": 3,
-        "width": "12",
-        "height": "1",
-        "passthru": false,
-        "label": "Générer un fichier de paramétrage ( .json )",
-        "tooltip": "",
-        "color": "#fff",
-        "bgcolor": "#28a745",
-        "className": "",
-        "icon": "queue_play_next",
-        "payload": "iso",
-        "payloadType": "date",
-        "topic": "generate-json",
-        "topicType": "str",
-        "x": 120,
-        "y": 500,
-        "wires": [
-            [
-                "3113795bd7e5b118"
-            ]
         ]
     },
     {
@@ -400,27 +274,6 @@
         "x": 880,
         "y": 500,
         "wires": []
-    },
-    {
-        "id": "4424557fc1182759",
-        "type": "ui_template",
-        "z": "tab1",
-        "group": "a233d3529c7149e2",
-        "name": "Show_Config",
-        "order": 4,
-        "width": "12",
-        "height": "2",
-        "format": "<pre>{{msg.payload}}</pre>",
-        "storeOutMessages": true,
-        "fwdInMessages": true,
-        "resendOnRefresh": true,
-        "templateScope": "local",
-        "className": "",
-        "x": 890,
-        "y": 540,
-        "wires": [
-            []
-        ]
     },
     {
         "id": "8a91d23b25cd0b08",
@@ -504,34 +357,6 @@
         "x": 380,
         "y": 200,
         "wires": []
-    },
-    {
-        "id": "82c3d4597646c124",
-        "type": "ui_button",
-        "z": "tab1",
-        "name": "STOP URGENCE",
-        "group": "bbd3e3f3bc9b",
-        "order": 6,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "label": "STOP URGENCE",
-        "tooltip": "",
-        "color": "white",
-        "bgcolor": "red",
-        "className": "",
-        "icon": "videocam",
-        "payload": "{\"order\":\"stop_ALL\"}",
-        "payloadType": "str",
-        "topic": "",
-        "topicType": "str",
-        "x": 110,
-        "y": 280,
-        "wires": [
-            [
-                "adf0d01fc7a74682"
-            ]
-        ]
     },
     {
         "id": "853ba8509187fe27",
@@ -623,14 +448,14 @@
                 "vt": "str"
             }
         ],
-        "repeat": "10",
+        "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
         "payload": "{\"ID_BASSIN\":\"Bassin_Test\", \"Niv_Eau\":35, \"WaterTemp\":25, \"AirTemp\":28}",
         "payloadType": "str",
-        "x": 680,
+        "x": 670,
         "y": 160,
         "wires": [
             [
@@ -652,7 +477,7 @@
                 "vt": "str"
             }
         ],
-        "repeat": "15",
+        "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
@@ -681,14 +506,14 @@
                 "vt": "str"
             }
         ],
-        "repeat": "12",
+        "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"ID_BASSIN\":\"Citerne\", \"Niv_Eau\":115, \"WaterTemp\":17, \"AirTemp\":18.87}",
+        "payload": "{\"ID_BASSIN\":\"Citerne\", \"Niv_Eau\":90, \"WaterTemp\":17, \"AirTemp\":18.87}",
         "payloadType": "str",
-        "x": 660,
+        "x": 650,
         "y": 280,
         "wires": [
             [
@@ -701,7 +526,7 @@
         "type": "debug",
         "z": "tab1",
         "name": "debug 7",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -750,48 +575,6 @@
             [
                 "9baa0259de3381d2"
             ]
-        ]
-    },
-    {
-        "id": "9baa0259de3381d2",
-        "type": "ui_template",
-        "z": "tab1",
-        "group": "b0923ab84e0fa760",
-        "name": "Show_Tide_State",
-        "order": 1,
-        "width": "0",
-        "height": "0",
-        "format": "<pre>{{msg.payload}}</pre>",
-        "storeOutMessages": true,
-        "fwdInMessages": true,
-        "resendOnRefresh": true,
-        "templateScope": "local",
-        "className": "",
-        "x": 750,
-        "y": 660,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "87eda498ec6a04a1",
-        "type": "ui_template",
-        "z": "tab1",
-        "group": "b0923ab84e0fa760",
-        "name": "Pipeline-State_Screen",
-        "order": 2,
-        "width": "0",
-        "height": "0",
-        "format": "<div layout=\"row\" layout-wrap layout-align=\"start start\" style=\"gap: 10px;\">\n    <div flex=\"10\" ng-repeat=\"pump in msg.payload\">\n        <md-card class=\"pump-card\">\n            <md-card-title>\n                <md-card-title-text>\n                    <span class=\"md-text\">{{pump.ID}}</span>\n                    <span class=\"md-subhead\">\n                        État : \n                        <span ng-class=\"{'active': pump.pump_State === 1, 'inactive': pump.pump_State === 0}\">\n                            {{pump.pump_State === 1 ? 'ON' : 'OFF'}}\n                        </span>\n                    </span>\n                </md-card-title-text>\n            </md-card-title>\n        </md-card>\n    </div>\n</div>\n\n<style>\n    .pump-card {\n        margin: 0px;\n        padding: 0px;\n        border-radius: 8px;\n        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);\n        background-color: #f7f7f7;\n        text-align: center;\n    }\n\n    .active {\n        color: green;\n        font-weight: bold;\n    }\n\n    .inactive {\n        color: red;\n        font-weight: bold;\n    }\n</style>",
-        "storeOutMessages": true,
-        "fwdInMessages": true,
-        "resendOnRefresh": true,
-        "templateScope": "local",
-        "className": "",
-        "x": 600,
-        "y": 760,
-        "wires": [
-            []
         ]
     },
     {
@@ -868,62 +651,6 @@
         ]
     },
     {
-        "id": "15418367ab85f813",
-        "type": "ui_gauge",
-        "z": "tab1",
-        "name": "Temp_Citerne",
-        "group": "b0923ab84e0fa760",
-        "order": 5,
-        "width": "3",
-        "height": "3",
-        "gtype": "gage",
-        "title": "Citerne",
-        "label": "°C",
-        "format": "{{msg.payload.WaterTemp}}",
-        "min": 0,
-        "max": "30",
-        "colors": [
-            "#62a0ea",
-            "#57e389",
-            "#ca3838"
-        ],
-        "seg1": "10",
-        "seg2": "20",
-        "diff": false,
-        "className": "",
-        "x": 580,
-        "y": 820,
-        "wires": []
-    },
-    {
-        "id": "e7429b848a19c31d",
-        "type": "ui_gauge",
-        "z": "tab1",
-        "name": "Level_Citerne",
-        "group": "b0923ab84e0fa760",
-        "order": 6,
-        "width": "3",
-        "height": "3",
-        "gtype": "wave",
-        "title": "Citerne",
-        "label": "cm",
-        "format": "{{msg.payload.Niv_Eau}}",
-        "min": 0,
-        "max": "200",
-        "colors": [
-            "#00b500",
-            "#e6e600",
-            "#ca3838"
-        ],
-        "seg1": "",
-        "seg2": "",
-        "diff": false,
-        "className": "",
-        "x": 580,
-        "y": 860,
-        "wires": []
-    },
-    {
         "id": "6abd3131153a56c9",
         "type": "mqtt in",
         "z": "tab1",
@@ -959,62 +686,6 @@
                 "95c5b38f19b4f8a9"
             ]
         ]
-    },
-    {
-        "id": "c636b809eed565a0",
-        "type": "ui_gauge",
-        "z": "tab1",
-        "name": "Temp_Bassin_Ref",
-        "group": "b0923ab84e0fa760",
-        "order": 3,
-        "width": "3",
-        "height": "3",
-        "gtype": "gage",
-        "title": "Bassin référence",
-        "label": "°C",
-        "format": "{{msg.payload.WaterTemp}}",
-        "min": 0,
-        "max": "30",
-        "colors": [
-            "#62a0ea",
-            "#57e389",
-            "#ca3838"
-        ],
-        "seg1": "10",
-        "seg2": "20",
-        "diff": false,
-        "className": "",
-        "x": 590,
-        "y": 920,
-        "wires": []
-    },
-    {
-        "id": "95c5b38f19b4f8a9",
-        "type": "ui_gauge",
-        "z": "tab1",
-        "name": "Level_Bassin_Ref",
-        "group": "b0923ab84e0fa760",
-        "order": 4,
-        "width": "3",
-        "height": "3",
-        "gtype": "wave",
-        "title": "Bassin Référence",
-        "label": "cm",
-        "format": "{{msg.payload.Niv_Eau}}",
-        "min": 0,
-        "max": "150",
-        "colors": [
-            "#00b500",
-            "#e6e600",
-            "#ca3838"
-        ],
-        "seg1": "",
-        "seg2": "",
-        "diff": false,
-        "className": "",
-        "x": 590,
-        "y": 960,
-        "wires": []
     },
     {
         "id": "79524a6a84d213e5",
@@ -1054,62 +725,6 @@
         ]
     },
     {
-        "id": "15b3741453a6a01d",
-        "type": "ui_gauge",
-        "z": "tab1",
-        "name": "Temp_Bassin_Test",
-        "group": "b0923ab84e0fa760",
-        "order": 7,
-        "width": "3",
-        "height": "3",
-        "gtype": "gage",
-        "title": "Bassin Test",
-        "label": "°C",
-        "format": "{{msg.payload.WaterTemp}}",
-        "min": 0,
-        "max": "30",
-        "colors": [
-            "#62a0ea",
-            "#57e389",
-            "#ca3838"
-        ],
-        "seg1": "10",
-        "seg2": "20",
-        "diff": false,
-        "className": "",
-        "x": 590,
-        "y": 1020,
-        "wires": []
-    },
-    {
-        "id": "c18ab1fd67737431",
-        "type": "ui_gauge",
-        "z": "tab1",
-        "name": "Level_Bassin_Test",
-        "group": "b0923ab84e0fa760",
-        "order": 8,
-        "width": "3",
-        "height": "3",
-        "gtype": "wave",
-        "title": "Bassin Test",
-        "label": "cm",
-        "format": "{{msg.payload.Niv_Eau}}",
-        "min": 0,
-        "max": "150",
-        "colors": [
-            "#00b500",
-            "#e6e600",
-            "#ca3838"
-        ],
-        "seg1": "",
-        "seg2": "",
-        "diff": false,
-        "className": "",
-        "x": 590,
-        "y": 1060,
-        "wires": []
-    },
-    {
         "id": "c302b9eee2975f95",
         "type": "inject",
         "z": "tab1",
@@ -1123,7 +738,7 @@
                 "vt": "str"
             }
         ],
-        "repeat": "12",
+        "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
@@ -1194,6 +809,266 @@
         ]
     },
     {
+        "id": "9d3589f684643ce9",
+        "type": "ui_button",
+        "z": "tab1",
+        "name": "Générer Fichier JSON",
+        "group": "a233d3529c7149e2",
+        "order": 3,
+        "width": "12",
+        "height": "1",
+        "passthru": false,
+        "label": "Générer un fichier de paramétrage ( .json )",
+        "tooltip": "",
+        "color": "#fff",
+        "bgcolor": "#28a745",
+        "className": "",
+        "icon": "queue_play_next",
+        "payload": "iso",
+        "payloadType": "date",
+        "topic": "generate-json",
+        "topicType": "str",
+        "x": 120,
+        "y": 500,
+        "wires": [
+            [
+                "3113795bd7e5b118"
+            ]
+        ]
+    },
+    {
+        "id": "c2dea98d846a3e37",
+        "type": "ui_dropdown",
+        "z": "tab1",
+        "name": "Source Info marée",
+        "label": "Source Info marée",
+        "tooltip": "",
+        "place": "1",
+        "group": "a233d3529c7149e2",
+        "order": 1,
+        "width": "5",
+        "height": "1",
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Fichier JSON local",
+                "value": "/home/bibi/code/pilotOTT/TideTable.json",
+                "type": "str"
+            },
+            {
+                "label": "Shom ",
+                "value": "https://maree.shom.fr/harbor/LA_ROCHELLE-PALLICE/wl/0?date=2025-01-13&utc=standard",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 110,
+        "y": 380,
+        "wires": [
+            [
+                "0b436fcf9bb04e97"
+            ]
+        ]
+    },
+    {
+        "id": "2635f8ab4cb1f864",
+        "type": "ui_text_input",
+        "z": "tab1",
+        "name": "",
+        "label": "Seuil déclenchement pompe1",
+        "tooltip": "",
+        "group": "a233d3529c7149e2",
+        "order": 2,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 150,
+        "y": 440,
+        "wires": [
+            [
+                "bea7555bc2f824e3"
+            ]
+        ]
+    },
+    {
+        "id": "15418367ab85f813",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Temp_Citerne",
+        "group": "b0923ab84e0fa760",
+        "order": 5,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Citerne",
+        "label": "°C",
+        "format": "{{msg.payload.WaterTemp}}",
+        "min": 0,
+        "max": "30",
+        "colors": [
+            "#62a0ea",
+            "#57e389",
+            "#ca3838"
+        ],
+        "seg1": "10",
+        "seg2": "20",
+        "diff": false,
+        "className": "",
+        "x": 580,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "e7429b848a19c31d",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Level_Citerne",
+        "group": "b0923ab84e0fa760",
+        "order": 6,
+        "width": "3",
+        "height": "3",
+        "gtype": "wave",
+        "title": "Citerne",
+        "label": "cm",
+        "format": "{{msg.payload.Niv_Eau}}",
+        "min": 0,
+        "max": "200",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 580,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "c636b809eed565a0",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Temp_Bassin_Ref",
+        "group": "b0923ab84e0fa760",
+        "order": 3,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Bassin référence",
+        "label": "°C",
+        "format": "{{msg.payload.WaterTemp}}",
+        "min": 0,
+        "max": "30",
+        "colors": [
+            "#62a0ea",
+            "#57e389",
+            "#ca3838"
+        ],
+        "seg1": "10",
+        "seg2": "20",
+        "diff": false,
+        "className": "",
+        "x": 590,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "95c5b38f19b4f8a9",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Level_Bassin_Ref",
+        "group": "b0923ab84e0fa760",
+        "order": 4,
+        "width": "3",
+        "height": "3",
+        "gtype": "wave",
+        "title": "Bassin Référence",
+        "label": "cm",
+        "format": "{{msg.payload.Niv_Eau}}",
+        "min": 0,
+        "max": "150",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 590,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "15b3741453a6a01d",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Temp_Bassin_Test",
+        "group": "b0923ab84e0fa760",
+        "order": 7,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Bassin Test",
+        "label": "°C",
+        "format": "{{msg.payload.WaterTemp}}",
+        "min": 0,
+        "max": "30",
+        "colors": [
+            "#62a0ea",
+            "#57e389",
+            "#ca3838"
+        ],
+        "seg1": "10",
+        "seg2": "20",
+        "diff": false,
+        "className": "",
+        "x": 590,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "c18ab1fd67737431",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Level_Bassin_Test",
+        "group": "b0923ab84e0fa760",
+        "order": 8,
+        "width": "3",
+        "height": "3",
+        "gtype": "wave",
+        "title": "Bassin Test",
+        "label": "cm",
+        "format": "{{msg.payload.Niv_Eau}}",
+        "min": 0,
+        "max": "150",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 590,
+        "y": 1060,
+        "wires": []
+    },
+    {
         "id": "e31baae53bcd77b8",
         "type": "ui_gauge",
         "z": "tab1",
@@ -1250,6 +1125,103 @@
         "wires": []
     },
     {
+        "id": "4424557fc1182759",
+        "type": "ui_template",
+        "z": "tab1",
+        "group": "a233d3529c7149e2",
+        "name": "Show_Config",
+        "order": 4,
+        "width": "12",
+        "height": "2",
+        "format": "<pre>{{msg.payload}}</pre>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 890,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9baa0259de3381d2",
+        "type": "ui_template",
+        "z": "tab1",
+        "group": "b0923ab84e0fa760",
+        "name": "Show_Tide_State",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "format": "<pre>{{msg.payload}}</pre>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 750,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "87eda498ec6a04a1",
+        "type": "ui_template",
+        "z": "tab1",
+        "group": "b0923ab84e0fa760",
+        "name": "Pipeline-State_Screen",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "format": "<div layout=\"row\" layout-wrap layout-align=\"start start\" style=\"gap: 10px;\">\n    <div flex=\"10\" ng-repeat=\"pump in msg.payload\">\n        <md-card class=\"pump-card\">\n            <md-card-title>\n                <md-card-title-text>\n                    <span class=\"md-text\">{{pump.ID}}</span>\n                    <span class=\"md-subhead\">\n                        État : \n                        <span ng-class=\"{'active': pump.pump_State === 1, 'inactive': pump.pump_State === 0}\">\n                            {{pump.pump_State === 1 ? 'ON' : 'OFF'}}\n                        </span>\n                    </span>\n                </md-card-title-text>\n            </md-card-title>\n        </md-card>\n    </div>\n</div>\n\n<style>\n    .pump-card {\n        margin: 0px;\n        padding: 0px;\n        border-radius: 8px;\n        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);\n        background-color: #f7f7f7;\n        text-align: center;\n    }\n\n    .active {\n        color: green;\n        font-weight: bold;\n    }\n\n    .inactive {\n        color: red;\n        font-weight: bold;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 600,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "influxdb-out",
+        "type": "influxdb out",
+        "z": "tab1",
+        "influxdb": "70ab23cc3edcb2b6",
+        "name": "Enregistrer dans InfluxDB",
+        "measurement": "bassin_data",
+        "precision": "ms",
+        "retentionPolicy": "",
+        "database": "bassins",
+        "retentionPolicyV18Flux": "",
+        "org": "",
+        "bucket": "",
+        "x": 850,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "b12d7169cd01eb59",
+        "type": "influxdb out",
+        "z": "tab1",
+        "influxdb": "70ab23cc3edcb2b6",
+        "name": "Enregistrer dans InfluxDB",
+        "measurement": "bassin_data",
+        "precision": "ms",
+        "retentionPolicy": "",
+        "database": "bassins",
+        "retentionPolicyV18Flux": "",
+        "org": "",
+        "bucket": "",
+        "x": 850,
+        "y": 720,
+        "wires": []
+    },
+    {
         "id": "8e239b0d5cb9746b",
         "type": "mqtt-broker",
         "name": "MQTT Local",
@@ -1268,32 +1240,6 @@
         "willTopic": "",
         "willQos": "0",
         "willPayload": ""
-    },
-    {
-        "id": "70ab23cc3edcb2b6",
-        "type": "influxdb",
-        "hostname": "127.0.0.1",
-        "port": "8086",
-        "protocol": "http",
-        "database": "datapiloteOTT",
-        "name": "PilotOTT",
-        "usetls": false,
-        "tls": "",
-        "influxdbVersion": "1.x",
-        "url": "http://localhost:8086",
-        "timeout": 10,
-        "rejectUnauthorized": true
-    },
-    {
-        "id": "a233d3529c7149e2",
-        "type": "ui_group",
-        "name": "Configuration",
-        "tab": "47f34c94245a48ed",
-        "order": 1,
-        "disp": true,
-        "width": "20",
-        "collapse": true,
-        "className": ""
     },
     {
         "id": "ba7648b8.35c9f8",
@@ -1316,14 +1262,14 @@
         "willPayload": ""
     },
     {
-        "id": "bbd3e3f3bc9b",
+        "id": "a233d3529c7149e2",
         "type": "ui_group",
-        "name": "Lancement de l'enregistrement",
-        "tab": "a5f6c3d7b9e4",
+        "name": "Configuration",
+        "tab": "47f34c94245a48ed",
         "order": 1,
         "disp": true,
-        "width": "12",
-        "collapse": false,
+        "width": "20",
+        "collapse": true,
         "className": ""
     },
     {
@@ -1338,19 +1284,25 @@
         "className": ""
     },
     {
+        "id": "70ab23cc3edcb2b6",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "piloteott",
+        "name": "PilotOTT",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "timeout": 10,
+        "rejectUnauthorized": true
+    },
+    {
         "id": "47f34c94245a48ed",
         "type": "ui_tab",
         "name": "Pilote OTT",
         "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
-    },
-    {
-        "id": "a5f6c3d7b9e4",
-        "type": "ui_tab",
-        "name": "Lancement de l'enregistrement",
-        "icon": "camera_roll",
-        "order": 3,
         "disabled": false,
         "hidden": false
     }
