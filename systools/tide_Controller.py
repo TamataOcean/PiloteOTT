@@ -1,4 +1,4 @@
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import threading
 import time
 import requests
@@ -61,12 +61,17 @@ def convertir_marees(marees):
 # Initialisation des GPIO
 # -----------------------
 def initialiser_pompes():
+
+
+    GPIO.setmode(GPIO.BCM)
     message = []
 
     for pompe in config_pilotOTT["pompes"]:
         etat_pompe = 1 if pompe['etat_initial'] == "ON" else 0
         etat_pompes_local[pompe["ID"]] = etat_pompe  # Stocker l'état initial localement
-        # GPIO.output(pompe["gpio"], GPIO.LOW if etat_pompe else GPIO.HIGH)
+        GPIO.setup(pompe["gpio"], GPIO.OUT)
+        GPIO.output(pompe["gpio"], GPIO.LOW if etat_pompe else GPIO.HIGH)
+
         print(f"🔧 Initialisation {pompe['ID']} ({pompe['description']}) -> {pompe['etat_initial']}")
         message.append({"ID": pompe["ID"], "pump_State": etat_pompe})
     
@@ -93,7 +98,7 @@ def controler_pompes(type_maree):
     
     for pompe in config_pilotOTT["pompes"]:
         etat_pompe = 1 if etat_actuel.get(pompe["ID"], "OFF") == "ON" else 0
-        # GPIO.output(pompe["gpio"], GPIO.LOW if etat_pompe else GPIO.HIGH)
+        GPIO.output(pompe["gpio"], GPIO.LOW if etat_pompe else GPIO.HIGH)
         print(f"🔧 {pompe['ID']} -> {'ON' if etat_pompe else 'OFF'}")
         etat_pompes_local[pompe["ID"]] = etat_pompe
         message.append({"ID": pompe["ID"], "pump_State": etat_pompe})
@@ -165,13 +170,13 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
     Source_Temp = data_capteurs.get("Source", {}).get("WaterTemp")
     Citerne_Temp = data_capteurs.get("Citerne", {}).get("WaterTemp")
 
-    if Citerne_Temp >= Source_Temp + 2.5:
-        print("on peut remplir le test, la température est supérieur de 2,5°C ")
-    else:
-        print(f"On ne peut pas remplir test, température Citerne {Citerne_Temp} VS Source {Source_Temp}")
+    # if Citerne_Temp >= (Source_Temp + 2.5):
+    #     print("on peut remplir le test, la température est supérieur de 2,5°C ")
+    # else:
+    #     print(f"On ne peut pas remplir test, température Citerne {Citerne_Temp} VS Source {Source_Temp}")
 
     # Appliquer les actions de contrôle en fonction du type de marée
-    if type_maree == "PM" and (Citerne_Temp >= (Source_Temp + 2.5)):  # Marée montante
+    if type_maree == "PM": # and (Citerne_Temp >= (Source_Temp + 2.5)):  # Marée montante
         # On remplit les 2 bassins REF et TEST jusqu'au niveau max de chaque bassin
         for bassin in config_pilotOTT["bassins"]:
             if bassin["ID"] == bassin_id:            
@@ -181,32 +186,32 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
                 # Controle du niveau max... 
                 if niveau_actuel >= bassin["NivEau_Max"]:
                     print(f"⚠️ {bassin_id} a atteint son niveau maximal, activation pompe vidage / arrêt pompe remplissage")
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 1
 
                 # Control du Niveau minimum 
                 elif niveau_actuel <= bassin["NivEau_Min"]:
                     print(f"⚠️ {bassin_id} sous son niveau minimal, activation pompe remplissage / arrêt pompe vidage")
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 1
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
                 
                 # Control pour arreter de remplir quand le NivEau_Haut est atteind
                 elif niveau_actuel >= bassin["NivEau_Haut"]:
                     print(f"🟢 {bassin_id} En marée montante, niveau haut atteind, arret pompe vidage / arret pompe remplissage")
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
 
                 # Conditition de remplissage jusqu'au niveau max... 
                 else:
                     print(f"🟢 {bassin_id} En marée montante, activation pompe remplissage / arret pompe vidage")
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 1
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
 
@@ -219,30 +224,30 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
 
                 if niveau_actuel >= bassin["NivEau_Max"]:
                     print(f"⚠️ {bassin_id} a atteint son niveau maximal, activation pompe  vidage / arret pompe remplissage")
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Désactivation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 1
 
                 elif niveau_actuel <= bassin["NivEau_Min"]:
                     print(f"⚠️ {bassin_id} sous son niveau minimal, arrêt pompe vidage / activation pompe remplissage")
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 1
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
                 
                 elif niveau_actuel < bassin["NivEau_Bas"]:
                     print(f"🟢 {bassin_id} En marée descendante, niveau bas atteind, arret pompe vidage / arret pompe remplissage")
 
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
 
                 else:
                     print(f"🟢 {bassin_id} En marée descendante, activation pompe vidage / arret pompe remplissage")
-                    # GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
-                    # GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 1
 
@@ -301,7 +306,7 @@ def on_message(client, userdata, msg):
             elif command == "stop_ALL":
                 print("🔴 Arrêt d'urgence, coupure de toutes les pompes")
                 for pompe in config_pilotOTT["pompes"]:
-                    # GPIO.output(pompe["gpio"], GPIO.LOW)
+                    GPIO.output(pompe["gpio"], GPIO.LOW)
                     print(f"stop pompe {pompe['gpio']}")
                     client.publish(MQTT_PUMP_STATE, json.dumps({"ID": pompe["ID"], "pump_State": 1}))
                 client.publish(MQTT_LOG_GENERAL, json.dumps({"event": "Arrêt d'urgence", "data": "Toutes les pompes arrêtées"}))
