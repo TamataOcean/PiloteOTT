@@ -42,18 +42,20 @@ int deviceCount = 0;
 int basin_number = 3;    //############ HERE, CHOOSE THE BASIN NUMBER (1 or 2 or 3 or ...)   #############
 
 // ****   NETWORK setup    ****
-const char* ssid     = "GasStationAP";   //"WifiRaspi"
-const char* password = "tamata50";         //"wifiraspi"
+const char* ssid     = "WifiRaspi";   //"WifiRaspi"
+const char* password = "wifiraspi";         //"wifiraspi"
 
 //const char* mqtt_server = "192.168.1.105"; //"172.24.1.1"
-const char* mqtt_server = "172.24.1.1"; // Passerelle par defaut du raspi
+const char* mqtt_server = "172.24.1.93"; // Passerelle par defaut du raspi
 
-const char* mqtt_output = "esp32/update";
+//const char* mqtt_output = "esp32/update";
+const char* mqtt_output = "input/data/Bassin_Test";
 const char* mqtt_input = "esp32/input";
 const char* mqtt_log = "esp32/log";
 const char* mqtt_user = "Groupe_74";    //"ESP32_Proto_Exemple"
 const char* mqtt_password = "password";
 const char mqtt_UUID[] = "UNIV_PUT_YOUR_UNIQUE_NAME";
+const char* ID_BASSIN = "Bassin_Test";
 
 const int ledPin = 4;
 int timeInterval = 2000;      //7500
@@ -159,12 +161,12 @@ void loop() {
     //Serial.print(NivEau);
     
     Serial.println();
-    //JSON phrase : {"Num_Bassin":1, "Niv_Eau":15.73, "WaterTemp":14.49, "AirTemp":17.87}
+    //JSON phrase : {"ID_BASSIN":"Bassin_Test", "Num_Bassin":1, "Niv_Eau":15.73, "WaterTemp":14.49, "AirTemp":17.87}
     //String json = "{\"user\":\""+(String)mqtt_user+"\",\"Humidity\":\""+(String)sensorBME280.readFloatHumidity()+"\",\"Pressure\":\""+(String)sensorBME280.readFloatPressure()+"\",\"Altitude\":\""+(String)sensorBME280.readFloatAltitudeMeters()+"\",\"AirTemperature\":\""+(String)sensorBME280.readTempC()+"\",\"WaterTemperature_1\":\""+(String)sensorDS18B20.getTempCByIndex(0)+"\",\"WaterTemperature_2\":\""+(String)sensorDS18B20.getTempCByIndex(1)+"\"}";
     //String json = "{\"user\":\""+(String)mqtt_user+"\",\"Humidity\":\""+(String)sensorBME280.readFloatHumidity()+"\",\"Pressure\":\""+(String)sensorBME280.readFloatPressure()+"\",\"Altitude\":\""+(String)sensorBME280.readFloatAltitudeMeters()+"\",\"AirTemperature\":\""+(String)sensorBME280.readTempC()+"\",\"WaterTemperature_1\":\""+(String)sensorDS18B20.getTempCByIndex(0)+"\",\"WaterTemperature_2\":\""+(String)sensorDS18B20.getTempCByIndex(1)+"\"}";
 
-    String json = "{\"user\":\""+(String)mqtt_user+"\",\"Num_Bassin\":\""+(String)basin_number+"\",\"Niv_Eau\":\""+(String)NivEau+"\",\"WaterTemp\":\""+String(WaterTemp,3)+"\",\"AirTemp\":\""+String(AirTemp,3)+"\"}";
-    
+    //String json = "{\"user\":\""+(String)mqtt_user+"\",\"Num_Bassin\":\""+(String)basin_number+"\",\"Niv_Eau\":\""+(String)NivEau+"\",\"WaterTemp\":\""+String(WaterTemp,3)+"\",\"AirTemp\":\""+String(AirTemp,3)+"\"}";
+    String json = "{\"user\":\""+(String)mqtt_user+"\",\"ID_BASSIN\":\""+ID_BASSIN+"\",\"Niv_Eau\":\""+(String)NivEau+"\",\"WaterTemp\":\""+String(WaterTemp,3)+"\",\"AirTemp\":\""+String(AirTemp,3)+"\"}";
     client.publish(mqtt_output, json.c_str() );
     client.disconnect();
 
