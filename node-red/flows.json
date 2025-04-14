@@ -737,7 +737,7 @@
         "type": "function",
         "z": "tab1",
         "name": "function 3",
-        "func": "var payload = JSON.parse(msg.payload);\nvar typeMaree = payload.typeMaree;\nvar nextTide = payload.nextTide;\n\nvar msgFormatted = { payload: \"🌊 Marée actuelle : \" + ((typeMaree === \"BM\") ? \"Marée descendante \" : \"Marée montante\") + \" / \"+ typeMaree + \" à \" + nextTide };\nreturn msgFormatted;",
+        "func": "var payload = JSON.parse(msg.payload);\nvar typeMaree = payload.typeMaree;\nvar nextTide = payload.nextTide;\n\nvar msgFormatted = { payload: \"🌊 Marée actuelle : \" + ((typeMaree === \"BM\") ? \"Marée descendante \" : \"Marée montante\") + \" - Prochaine \"+ typeMaree + \" à \" + nextTide };\nreturn msgFormatted;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1107,6 +1107,146 @@
         "className": "",
         "x": 590,
         "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "c302b9eee2975f95",
+        "type": "inject",
+        "z": "tab1",
+        "name": "TEST Bassin_Source",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "12",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"ID_BASSIN\":\"Source\", \"Niv_Eau\":150, \"WaterTemp\":16, \"AirTemp\":18.87}",
+        "payloadType": "str",
+        "x": 680,
+        "y": 340,
+        "wires": [
+            [
+                "b05674754d8e2504"
+            ]
+        ]
+    },
+    {
+        "id": "b05674754d8e2504",
+        "type": "mqtt out",
+        "z": "tab1",
+        "name": "",
+        "topic": "input/data/Bassin_Source",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8e239b0d5cb9746b",
+        "x": 1010,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7a10146a2edc80bb",
+        "type": "json",
+        "z": "tab1",
+        "name": "Parser JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 370,
+        "y": 1140,
+        "wires": [
+            [
+                "e31baae53bcd77b8",
+                "9d535b09fdaf6b5c"
+            ]
+        ]
+    },
+    {
+        "id": "d3c92f6a0aadf56b",
+        "type": "mqtt in",
+        "z": "tab1",
+        "name": "input data Bassin_Source",
+        "topic": "input/data/Bassin_Source",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "8e239b0d5cb9746b",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 150,
+        "y": 1140,
+        "wires": [
+            [
+                "7a10146a2edc80bb"
+            ]
+        ]
+    },
+    {
+        "id": "e31baae53bcd77b8",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Temp_Bassin_Source",
+        "group": "b0923ab84e0fa760",
+        "order": 9,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Bassin Source",
+        "label": "°C",
+        "format": "{{msg.payload.WaterTemp}}",
+        "min": 0,
+        "max": "30",
+        "colors": [
+            "#62a0ea",
+            "#57e389",
+            "#ca3838"
+        ],
+        "seg1": "10",
+        "seg2": "20",
+        "diff": false,
+        "className": "",
+        "x": 600,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "9d535b09fdaf6b5c",
+        "type": "ui_gauge",
+        "z": "tab1",
+        "name": "Level_Bassin_Source",
+        "group": "b0923ab84e0fa760",
+        "order": 10,
+        "width": "3",
+        "height": "3",
+        "gtype": "wave",
+        "title": "Bassin Source",
+        "label": "cm",
+        "format": "{{msg.payload.Niv_Eau}}",
+        "min": 0,
+        "max": "150",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 600,
+        "y": 1160,
         "wires": []
     },
     {
