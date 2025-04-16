@@ -1,19 +1,44 @@
 {
   "conf": {
-    "Tide_Source": "/home/bibi/code/PiloteOTT/systools/tides/LaRochelle_tides.json",
     "pompes": [
-      {"ID": "Pompe1", "description": "Remplissage bassin de test", "gpio": 17, "etat_initial": "OFF"},
-      {"ID": "Pompe2", "description": "Vidage bassin de test", "gpio": 18, "etat_initial": "OFF"},
-      {"ID": "Pompe3", "description": "Remplissage bassin de référence", "gpio": 27, "etat_initial": "OFF"},
-      {"ID": "Pompe4", "description": "Vidage bassin de référence", "gpio": 22, "etat_initial": "OFF"},
-      {"ID": "Pompe5", "description": "Remplissage citerne", "gpio": 23, "etat_initial": "OFF"}
+      {"ID": "Pompe1", "description": "Remplissage bassin de test", "gpio": 5, "etat_initial": "OFF"},
+      {"ID": "Pompe2", "description": "Vidage bassin de test", "gpio": 6, "etat_initial": "OFF"},
+      {"ID": "Pompe3", "description": "Remplissage bassin de référence", "gpio": 13, "etat_initial": "OFF"},
+      {"ID": "Pompe4", "description": "Vidage bassin de référence", "gpio": 16, "etat_initial": "OFF"},
+      {"ID": "Pompe5", "description": "Remplissage citerne", "gpio": 19, "etat_initial": "OFF"}
     ],
     "bassins" : [
-      {"ID": "Bassin_Test", "NivEau_Bas":20, "NivEau_Haut":90, "NivEau_Max":100, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe1", "ID_POMPE_VIDAGE":"Pompe2" },
-      {"ID": "Bassin_Reference", "NivEau_Bas":20, "NivEau_Haut":90, "NivEau_Max":100, "NivEau_Min":15, "ID_POMPE_REMPLISSAGE":"Pompe3", "ID_POMPE_VIDAGE":"Pompe4"}
+      {
+        "ID": "Bassin_Test", 
+        "Hauteur_Sensor":1500,
+        "NivEau_Bas":300, 
+        "NivEau_Min":10, 
+        "NivEau_Haut":800, 
+        "NivEau_Max":1200, 
+        "ID_POMPE_REMPLISSAGE":"Pompe1", 
+        "ID_POMPE_VIDAGE":"Pompe2" 
+      },
+      {
+        "ID": "Bassin_Reference",
+        "Hauteur_Sensor":1500,
+        "NivEau_Bas":20, 
+        "NivEau_Min":15, 
+        "NivEau_Haut":90, 
+        "NivEau_Max":100, 
+        "ID_POMPE_REMPLISSAGE":"Pompe3", 
+        "ID_POMPE_VIDAGE":"Pompe4"
+      }
     ],
     "citerne": [
-      {"ID": "Citerne", "NivEau_Max":200, "NivEau_Min":0, "TemperatureMin":15, "ID_POMPE_REMPLISSAGE":"Pompe5", "ID_POMPE_VIDAGE":"Pompe1"}
+      {
+        "ID": "Citerne",
+        "Hauteur_Sensor":1500, 
+        "NivEau_Max":200, 
+        "NivEau_Min":0, 
+        "TemperatureMin":15, 
+        "ID_POMPE_REMPLISSAGE":"Pompe5", 
+        "ID_POMPE_VIDAGE":"Pompe1"
+      }
     ]
   }
     

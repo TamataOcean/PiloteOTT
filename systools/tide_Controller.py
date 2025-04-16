@@ -157,9 +157,9 @@ def getMaree():
 # ------------------------------------------------
 # GESTION DES POMPES / HEURE de marée et Niv EAU
 # ------------------------------------------------
-def controler_pompes_niveau(bassin_id, niveau_actuel):
+def controler_pompes_niveau(bassin_id, distance):
 
-    print(f"Bassin : {bassin_id} / niveau actuelle : {niveau_actuel} ")
+    print(f"Bassin : {bassin_id} / distance : {distance} ")
     
     message = []
     # On récupérer la marée ( montante / descendante )
@@ -179,9 +179,12 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
     if type_maree == "PM": # and (Citerne_Temp >= (Source_Temp + 2.5)):  # Marée montante
         # On remplit les 2 bassins REF et TEST jusqu'au niveau max de chaque bassin
         for bassin in config_pilotOTT["bassins"]:
+            Hauteur_Sensor = float(bassin["Hauteur_Sensor"])
+            
             if bassin["ID"] == bassin_id:            
                 pompe_remplissage = next((p for p in config_pilotOTT["pompes"] if p["ID"] == bassin["ID_POMPE_REMPLISSAGE"]), None)
                 pompe_vidage = next((p for p in config_pilotOTT["pompes"] if p["ID"] == bassin["ID_POMPE_VIDAGE"]), None)
+                niveau_actuel = Hauteur_Sensor - distance
                 
                 # Controle du niveau max... 
                 if niveau_actuel >= bassin["NivEau_Max"]:
@@ -202,7 +205,7 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
                 # Control pour arreter de remplir quand le NivEau_Haut est atteind
                 elif niveau_actuel >= bassin["NivEau_Haut"]:
                     print(f"🟢 {bassin_id} En marée montante, niveau haut atteind, arret pompe vidage / arret pompe remplissage")
-                    GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
+                    GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
                     GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
@@ -224,11 +227,13 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
                 nivEau_Max = float(bassin["NivEau_Max"])
                 nivEau_Min = float(bassin["NivEau_Min"])
                 nivEau_Bas = float(bassin["NivEau_Bas"])
+                Hauteur_Sensor = float(bassin["Hauteur_Sensor"])
+                niveau_actuel = Hauteur_Sensor - distance
 
                 if niveau_actuel >= nivEau_Max:
                     print(f"⚠️ {bassin_id} a atteint son niveau maximal, activation pompe  vidage / arret pompe remplissage")
                     GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
-                    GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Désactivation
+                    GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 1
 
