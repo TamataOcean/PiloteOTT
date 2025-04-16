@@ -221,22 +221,25 @@ def controler_pompes_niveau(bassin_id, niveau_actuel):
             if bassin["ID"] == bassin_id:
                 pompe_remplissage = next((p for p in config_pilotOTT["pompes"] if p["ID"] == bassin["ID_POMPE_REMPLISSAGE"]), None)
                 pompe_vidage = next((p for p in config_pilotOTT["pompes"] if p["ID"] == bassin["ID_POMPE_VIDAGE"]), None)
+                nivEau_Max = float(bassin["NivEau_Max"])
+                nivEau_Min = float(bassin["NivEau_Min"])
+                nivEau_Bas = float(bassin["NivEau_Bas"])
 
-                if niveau_actuel >= bassin["NivEau_Max"]:
+                if niveau_actuel >= nivEau_Max:
                     print(f"⚠️ {bassin_id} a atteint son niveau maximal, activation pompe  vidage / arret pompe remplissage")
                     GPIO.output(pompe_vidage["gpio"], GPIO.LOW)  # Activation
                     GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Désactivation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 0
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 1
 
-                elif niveau_actuel <= bassin["NivEau_Min"]:
+                elif niveau_actuel <= nivEau_Min:
                     print(f"⚠️ {bassin_id} sous son niveau minimal, arrêt pompe vidage / activation pompe remplissage")
                     GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
                     GPIO.output(pompe_remplissage["gpio"], GPIO.LOW)  # Activation
                     etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 1
                     etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
                 
-                elif niveau_actuel < bassin["NivEau_Bas"]:
+                elif niveau_actuel < nivEau_Bas:
                     print(f"🟢 {bassin_id} En marée descendante, niveau bas atteind, arret pompe vidage / arret pompe remplissage")
 
                     GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Activation
@@ -280,9 +283,9 @@ def on_message(client, userdata, msg):
         # if msg.topic == MQTT_DATA:
         if msg.topic.startswith("input/data/"):
             id_bassin = payload.get("ID_BASSIN")
-            niveau_eau = payload.get("Niv_Eau")
-            water_temp = payload.get("WaterTemp")
-            air_temp = payload.get("AirTemp")
+            niveau_eau = float(payload.get("Niv_Eau"))
+            water_temp = float(payload.get("WaterTemp"))
+            air_temp = float(payload.get("AirTemp"))
 
             # Stockage des dernières valeurs des capteurs 
             data_capteurs[id_bassin] = {
