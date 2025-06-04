@@ -246,7 +246,8 @@ def controler_pompes_niveau(bassin_id, distance):
 
     nivCiterne = Hauteur_Sensor - Citerne_Distance
     print(f"nivCiterne = {nivCiterne}")
-
+    print(f"nivEau_Min_Citerne = {nivEau_Min_Citerne}")
+    
     # Appliquer les actions de contrôle en fonction du type de marée
     if type_maree == "PM" :  # Marée montante
         #print(f"consignes_citerne : {consignes_citerne}")
@@ -319,7 +320,7 @@ def controler_pompes_niveau(bassin_id, distance):
                                 GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
                                 etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 1
                                 etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
-                            else # On doit absolument couper la pompe de remplissage du bassin test
+                            else:  # On doit absolument couper la pompe de remplissage du bassin test
                                 print(f"Le niveau dans la citerne est insuffisant, on arretela pompe de remplissage du bassin de test ")
                                 GPIO.output(pompe_remplissage["gpio"], GPIO.HIGH)  # Désactivation
                                 GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
