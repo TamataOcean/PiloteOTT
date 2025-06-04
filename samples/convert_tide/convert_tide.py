@@ -1,7 +1,9 @@
 import re
 import json
 
-# Fonction pour convertir les marées en JSON
+# Fonction pour convertir les marées en JSON 
+# ------------------------------------------
+
 def convertir_marées(fichier_texte, fichier_json):
     # Ouvrir le fichier texte
     with open(fichier_texte, 'r') as f:
