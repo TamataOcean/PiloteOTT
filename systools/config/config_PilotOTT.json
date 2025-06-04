@@ -7,24 +7,33 @@
       {"ID": "Pompe4", "description": "Vidage bassin de référence", "gpio": 16, "etat_initial": "OFF"},
       {"ID": "Pompe5", "description": "Remplissage citerne", "gpio": 19, "etat_initial": "OFF"}
     ],
+    "chauffages": [
+      {"ID": "Chauffage1", "description": "Chauffe Eau Citerne", "gpio": 20, "etat_initial": "OFF"},
+      {"ID": "Chauffage2", "description": "Chauffe Eau Bassin Test", "gpio": 21, "etat_initial": "OFF"},
+      {"ID": "Chauffage3", "description": "Chauffe Air Bassin Test", "gpio": 26, "etat_initial": "OFF"}
+    ],
+    "temperatures": [
+      {"WaterTemp_Offset": 2.5, "Unite":"°Celsius"},
+      {"AirTemp_Offset": 4.0, "Unite":"°Celsius"}
+    ],
     "bassins" : [
       {
         "ID": "Bassin_Test", 
-        "Hauteur_Sensor":1500,
-        "NivEau_Bas":300, 
-        "NivEau_Min":10, 
-        "NivEau_Haut":800, 
-        "NivEau_Max":1200, 
+        "Hauteur_Sensor":600,
+        "NivEau_Bas":100, 
+        "NivEau_Min":80, 
+        "NivEau_Haut":200, 
+        "NivEau_Max":300, 
         "ID_POMPE_REMPLISSAGE":"Pompe1", 
         "ID_POMPE_VIDAGE":"Pompe2" 
       },
       {
         "ID": "Bassin_Reference",
-        "Hauteur_Sensor":1500,
-        "NivEau_Bas":20, 
-        "NivEau_Min":15, 
-        "NivEau_Haut":90, 
-        "NivEau_Max":100, 
+        "Hauteur_Sensor":600,
+        "NivEau_Bas":100, 
+        "NivEau_Min":80, 
+        "NivEau_Haut":200, 
+        "NivEau_Max":300, 
         "ID_POMPE_REMPLISSAGE":"Pompe3", 
         "ID_POMPE_VIDAGE":"Pompe4"
       }
@@ -32,12 +41,14 @@
     "citerne": [
       {
         "ID": "Citerne",
-        "Hauteur_Sensor":1500, 
-        "NivEau_Max":200, 
-        "NivEau_Min":0, 
+        "Hauteur_Sensor":800, 
+        "NivEau_Max":500, 
+        "NivEau_Min":10,
+        "NivEau_Chauff":150,	
         "TemperatureMin":15, 
         "ID_POMPE_REMPLISSAGE":"Pompe5", 
-        "ID_POMPE_VIDAGE":"Pompe1"
+        "ID_POMPE_VIDAGE":"Pompe1",
+        "ID_CHAUFFAGE":"Chauffage1"
       }
     ]
   }
