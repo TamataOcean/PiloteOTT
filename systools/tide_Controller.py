@@ -42,20 +42,20 @@ water_offset = 2.5
 def charger_configuration():
     try:
         with open(CONFIG_PATH, "r") as fichier:
-            print("Fichier de configuration trouvé")
+            print("[CONFIG] - Fichier de configuration trouvé")
             return json.load(fichier)["conf"]
     except Exception as e:
-        print(f"Erreur lors du chargement du fichier de config : {e}")
+        print(f"[CONFIG] - Erreur lors du chargement du fichier de config : {e}")
         return None
 
 # Charger les données des marées
 def charger_marees():
     try:
         with open(MAREES_PATH, "r") as fichier_marees:
-            print("Fichier des marées trouvé")
+            print("[CONFIG] - Fichier des marées trouvé")
             return json.load(fichier_marees)
     except Exception as e:
-        print(f"Erreur lors du chargement du fichier des marées : {e}")
+        print(f"[CONFIG] - Erreur lors du chargement du fichier des marées : {e}")
         return []
 
 # Convertir les données des marées en objets datetime
@@ -84,7 +84,7 @@ def initialiser_pompes():
         GPIO.setup(pompe["gpio"], GPIO.OUT)
         GPIO.output(pompe["gpio"], GPIO.LOW if etat_pompe else GPIO.HIGH)
         
-        print(f"🔧 Initialisation {pompe['ID']} ({pompe['description']}) -> {pompe['etat_initial']}")
+        print(f"🔧 INITIALISATION {pompe['ID']} ({pompe['description']}) -> {pompe['etat_initial']}")
         message.append({"ID": pompe["ID"], "pump_State": etat_pompe})
     
     json_message = json.dumps(message)
@@ -97,7 +97,7 @@ def initialiser_pompes():
         GPIO.setup(chauffage["gpio"], GPIO.OUT)
         GPIO.output(chauffage["gpio"], GPIO.LOW if etat_chauffage else GPIO.HIGH)
         
-        print(f"🔧 Initialisation {chauffage['ID']} ({chauffage['description']}) -> {chauffage['etat_initial']}")
+        print(f"🔧 INITIALISATION {chauffage['ID']} ({chauffage['description']}) -> {chauffage['etat_initial']}")
         message.append({"ID": chauffage["ID"], "pump_State": etat_chauffage})
     
     json_message = json.dumps(message)
@@ -108,7 +108,7 @@ def initialiser_pompes():
 # Extinction de tous les relais()
 # ------------------------------------------
 def extinction_relais():
-    print("Arret de tous les relais")
+    print("[CLOSING] - Arret de tous les relais")
     liste_gpio = [5,6,13,16,19,20,21,26]
     for i in liste_gpio:
         GPIO.setup(i, GPIO.OUT)
