@@ -334,7 +334,7 @@ def controler_pompes_niveau(bassin_id, distance):
                         etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
 
                 
-    elif type_maree == "BM":  # Marée descendante
+    elif type_maree == "BM":  # Marée descendante Basse Mer
         consignes_citerne = 0          # remise à zéro du témoin des consignes dans la citerne
         
         print(f"heating_time : {heating_time}")
