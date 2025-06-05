@@ -33,11 +33,9 @@ global etat_chauffages_local
 
 global consignes_citerne		# Variable du statut des consignes de température et niveau d'eau de la Citerne (booléen)   DD, le 19/05/2025
 consignes_citerne = 0
-#print(f"consignes_citerne : {consignes_citerne}")
 
 data_capteurs = {}
 global water_offset
-water_offset = 2.5
 
 def charger_configuration():
     try:
@@ -209,7 +207,6 @@ def controler_pompes_niveau(bassin_id, distance):
     
     # Check temperature citerne VS tempertaure source
     Source_Temp = data_capteurs.get("Bassin_Source", {}).get("WaterTemp")
-    #Source_Temp = 21.25
     if Source_Temp is None:
         Source_Temp = 0
     print(f"Source_Temp : {Source_Temp}")
@@ -223,14 +220,12 @@ def controler_pompes_niveau(bassin_id, distance):
     if Citerne_Distance is None:
         Citerne_Distance = 0
     print(f"Citerne_Distance : {Citerne_Distance}")
-
-    #Citerne_Distance = data_capteurs.get("Citerne", {}).get("Niv-Eau")
-    #Citerne_Distance = 500          ######     !!!!!!!!!!!!!!
-    #water_offset = config_pilotOTT["temperatures"][0]["WaterTemp_Offset"]            # offset de température de l'eau dû au réchauffement climatique
+   
     global heating_time
     global consignes_citerne
     print(f"consignes_citerne : {consignes_citerne}")
-    #global water_offset
+    
+    water_offset = config_pilotOTT["temperatures"][0]["WaterTemp_Offset"]            # offset de température de l'eau dû au réchauffement climatique
     print(f"water_offset : {water_offset}")
 
     for citerne in config_pilotOTT["citerne"]:
@@ -241,7 +236,7 @@ def controler_pompes_niveau(bassin_id, distance):
 
         pompe_remplissage_citerne = next((p for p in config_pilotOTT["pompes"] if p["ID"] == citerne["ID_POMPE_REMPLISSAGE"]), None) 
         chauffage_citerne = next((q for q in config_pilotOTT["chauffages"] if q["ID"] == citerne["ID_CHAUFFAGE"]), None) 
-        print(f"GPIO chauffage Citerne : {GPIO.input(20)}")
+        # print(f"GPIO chauffage Citerne : {GPIO.input(20)}")
         #print(f"chauffage_citerne : {chauffage_citerne}")
 
     nivCiterne = Hauteur_Sensor - Citerne_Distance
@@ -254,22 +249,24 @@ def controler_pompes_niveau(bassin_id, distance):
         if (consignes_citerne == 0):     	# Consigne T° et consigne niveau pas encore atteintes dans la citerne
             #print(f"consignes_citerne : {consignes_citerne}")
 
-            # for citerne in config_pilotOTT["citerne"]:
-            #     nivEau_Max_Citerne = float(citerne["NivEau_Max"])
-            #     nivEau_Chauff = float(citerne["NivEau_Chauff"])
-            #     Hauteur_Sensor = float(citerne["Hauteur_Sensor"])
-            #     pompe_remplissage_citerne = next((p for p in config_pilotOTT["pompes"] if p["ID"] == citerne["ID_POMPE_REMPLISSAGE"]), None) 
-            #     chauffage_citerne = next((q for q in config_pilotOTT["chauffages"] if q["ID"] == citerne["ID_CHAUFFAGE"]), None) 
-            #     print(f"chauffage_citerne : {chauffage_citerne}")
+            for bassin in config_pilotOTT["bassins"]:               # Arret pompe vidage Test et Ref
+                pompe_vidage = next((p for p in config_pilotOTT["pompes"] if p["ID"] == bassin["ID_POMPE_VIDAGE"]), None)
+                GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation pompe
+                etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
 
-            # Hauteur_Sensor = float(config_pilotOTT["citerne"][0]["Hauteur_Sensor"])
+
             if nivCiterne >= float(citerne["NivEau_Max"]) :
                 print(f"nivCiterne >= NivEau_Max")
                 GPIO.output(pompe_remplissage_citerne["gpio"], GPIO.HIGH)  		# Stop pompe remplissage Citerne
                 if Citerne_Temp < Source_Temp + water_offset :
                     GPIO.output(chauffage_citerne["gpio"], GPIO.LOW)  	# Activation chauffage Citerne
+                    etat_chauffages_local["Chauffage1"] = 1
+                    etat_pompes_local[citerne["ID_POMPE_VIDAGE"]] = 1
+
                 elif Citerne_Temp >= Source_Temp  + water_offset :
                     GPIO.output(chauffage_citerne["gpio"], GPIO.HIGH)  	# Stop chauffage Citerne
+                    etat_chauffages_local["Chauffage1"] = 0
+
                     consignes_citerne = 1					# Témoin temp et niveau atteint dans Citerne, OK
                     now = datetime.now()                    # Calcul du temps de chauffe et de remplissage de la citerne depuis la dernière marée 
                     global previous_maree
@@ -408,18 +405,27 @@ def controler_pompes_niveau(bassin_id, distance):
     # Publier l'état des pompes
     envoyer_etat_pompes()
 
+    # Publier l'état des chauffages
+    envoyer_etat_chauffage()
+
+
 def envoyer_etat_pompes():
     """Envoie un message MQTT avec l'état actuel de toutes les pompes."""
     global etat_pompes_local
-    global etat_chauffages_local
-
     message = [{"ID": pompe_id, "pump_State": etat} for pompe_id, etat in etat_pompes_local.items()]
     print(f"Envoi etat pompe : {message}")
     json_message = json.dumps(message)
-    client.publish(MQTT_PUMP_STATE, json_message)
-    
+    client.publish(MQTT_PUMP_STATE, json_message) 
     #print(f"📡 Envoi état global des pompes : {json_message}")
 
+def envoyer_etat_chauffage():
+    """Envoie un message MQTT avec l'état actuel de toutes les chauffages."""
+    global etat_chauffages_local
+    message = [{"ID": pompe_id, "pump_State": etat} for pompe_id, etat in etat_chauffages_local.items()]
+    print(f"Envoi etat pompe : {message}")
+    json_message = json.dumps(message)
+    client.publish(MQTT_PUMP_STATE, json_message) 
+     #print(f"📡 Envoi état global des chauffages : {json_message}")
 # ------------------
 # Connexion MQTT
 # ------------------
