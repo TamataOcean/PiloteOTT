@@ -11,6 +11,7 @@ import bisect
 MQTT_BROKER =       "localhost"
 # MQTT_BROKER = "host.docker.internal" # Version Dockerisé 
 MQTT_PUMP_STATE =   "server/pumpState"
+MQTT_HEATER_STATE =   "server/heaterState"
 MQTT_LOG_GENERAL =  "server/log"
 MQTT_TIDE_STATE =   "server/tideState"
 
@@ -30,12 +31,20 @@ print(f"heating_time : {heating_time}")
 
 global etat_pompes_local
 global etat_chauffages_local
+global last_ext_temp
+last_ext_temp = 0
 
 global consignes_citerne		# Variable du statut des consignes de température et niveau d'eau de la Citerne (booléen)   DD, le 19/05/2025
 consignes_citerne = 0
 
 data_capteurs = {}
 global water_offset
+global air_offset
+
+global relaisVentilo
+relaisVentilo = "Chauffage3"
+global resistanceBassinTest
+resistanceBassinTest = "Chauffage2"
 
 def charger_configuration():
     try:
@@ -45,6 +54,18 @@ def charger_configuration():
     except Exception as e:
         print(f"[CONFIG] - Erreur lors du chargement du fichier de config : {e}")
         return None
+
+# Charger l'offset de temperature de l'air et de l'eau
+def charger_offsets():
+    global water_offset
+    global air_offset
+    water_offset = config_pilotOTT["temperatures"][0]["WaterTemp_Offset"]            # offset de température de l'eau dû au réchauffement climatique
+    print(f"water_offset : {water_offset}")
+
+    air_offset = config_pilotOTT["temperatures"][1]["AirTemp_Offset"]            # offset de température de l'eau dû au réchauffement climatique
+    print(f"air_offset : {air_offset}")
+    return None
+
 
 # Charger les données des marées
 def charger_marees():
@@ -225,9 +246,6 @@ def controler_pompes_niveau(bassin_id, distance):
     global consignes_citerne
     print(f"consignes_citerne : {consignes_citerne}")
     
-    water_offset = config_pilotOTT["temperatures"][0]["WaterTemp_Offset"]            # offset de température de l'eau dû au réchauffement climatique
-    print(f"water_offset : {water_offset}")
-
     for citerne in config_pilotOTT["citerne"]:
         nivEau_Max_Citerne = float(citerne["NivEau_Max"])
         nivEau_Chauff = float(citerne["NivEau_Chauff"])
@@ -346,8 +364,32 @@ def controler_pompes_niveau(bassin_id, distance):
                         GPIO.output(pompe_vidage["gpio"], GPIO.HIGH)  # Désactivation
                         etat_pompes_local[bassin["ID_POMPE_REMPLISSAGE"]] = 1
                         etat_pompes_local[bassin["ID_POMPE_VIDAGE"]] = 0
+            
+                    # Gestion du chauffage dans le bassin Test
+                    if bassin_id == "Bassin_Test":
+                        waterTempBassinTest = data_capteurs.get("Bassin_Test", {}).get("WaterTemp")
+                        if waterTempBassinTest is None:
+                            waterTempBassinTest = 0
+                        print(f"waterTempBassinTest : {waterTempBassinTest}")
 
-                
+                        waterTempBassinReference = data_capteurs.get("Bassin_Reference", {}).get("WaterTemp")
+                        if waterTempBassinReference is None:
+                            waterTempBassinReference = 0
+                        print(f"waterTempBassinReference : {waterTempBassinReference}")
+
+                        for resistance in config_pilotOTT["chauffages"]:
+                            if resistance["ID"] == resistanceBassinTest:
+                                if niveau_actuel > bassin["NivEau_Bas"]:
+                                    if (waterTempBassinTest < waterTempBassinReference + water_offset) :
+                                        GPIO.output(resistance["gpio"], GPIO.LOW)  # Activation
+                                        etat_chauffages_local[resistance["ID"]] = 1
+                                    else:
+                                        GPIO.output(resistance["gpio"], GPIO.HIGH)  # Desactivation
+                                        etat_chauffages_local[resistance["ID"]] = 0
+                                else:
+                                    GPIO.output(resistance["gpio"], GPIO.HIGH)  # Desactivation
+                                    etat_chauffages_local[resistance["ID"]] = 0
+             
     elif type_maree == "BM":  # Marée descendante Basse Mer
         consignes_citerne = 0          # remise à zéro du témoin des consignes dans la citerne
         
@@ -409,6 +451,23 @@ def controler_pompes_niveau(bassin_id, distance):
     envoyer_etat_chauffage()
 
 
+def controler_ventilateur(airTempIn,airTempOut,relaisVentilo):  
+    # Gestion des ventilateurs dans le bassin Test
+    
+    print(f"airTempIn : {airTempIn}")
+    print(f"airTempout : {airTempOut}")
+    print(f"air_offset : {air_offset}")
+
+    for ventilo in config_pilotOTT["chauffages"]:
+        if ventilo["ID"] == relaisVentilo:
+            if (airTempIn > airTempOut + air_offset) :
+                GPIO.output(ventilo["gpio"], GPIO.LOW)  # Activation
+                etat_chauffages_local[ventilo["ID"]] = 1
+            else:
+                GPIO.output(ventilo["gpio"], GPIO.HIGH)  # Desactivation
+                etat_chauffages_local[ventilo["ID"]] = 0
+
+
 def envoyer_etat_pompes():
     """Envoie un message MQTT avec l'état actuel de toutes les pompes."""
     global etat_pompes_local
@@ -424,7 +483,7 @@ def envoyer_etat_chauffage():
     message = [{"ID": pompe_id, "pump_State": etat} for pompe_id, etat in etat_chauffages_local.items()]
     print(f"Envoi etat pompe : {message}")
     json_message = json.dumps(message)
-    client.publish(MQTT_PUMP_STATE, json_message) 
+    client.publish(MQTT_HEATER_STATE, json_message) 
      #print(f"📡 Envoi état global des chauffages : {json_message}")
 # ------------------
 # Connexion MQTT
@@ -455,6 +514,15 @@ def on_message(client, userdata, msg):
             print(f"Data Capteur pour {id_bassin} = {data_capteurs[id_bassin]}")
             if id_bassin and niveau_eau is not None:
                 controler_pompes_niveau(id_bassin, niveau_eau)
+
+            global last_ext_temp
+
+            if id_bassin == "Bassin_Reference":
+                last_ext_temp = air_temp                               # derniere valeur de la temperature exterieure mesuree
+
+            if id_bassin == "Bassin_Test":
+                if last_ext_temp is not None:
+                    controler_ventilateur(air_temp,last_ext_temp,relaisVentilo)            
 
         elif msg.topic == MQTT_ORDERS:
             command = payload.get("order")
@@ -505,6 +573,7 @@ try:
     # marees = charger_marees()  # Charger les données des marées
     marees_converties = convertir_marees(charger_marees())  # Convertir les marées en objets datetime
     initialiser_pompes()
+    charger_offsets()
 
     # Démarrage du thread d'envoi périodique ( toutes les 60 sec )
     etatPerio_thread = threading.Thread(target=envoyer_etat_periodique,args=(60,), daemon=True)
