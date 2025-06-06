@@ -392,7 +392,12 @@ def controler_pompes_niveau(bassin_id, distance):
              
     elif type_maree == "BM":  # Marée descendante Basse Mer
         consignes_citerne = 0          # remise à zéro du témoin des consignes dans la citerne
-        
+        # arret Chauffage1 et Chauffage2
+        for resistance in config_pilotOTT["chauffages"]:
+            if resistance["ID"] != "chaufage3" :
+                GPIO.output(resistance["gpio"], GPIO.HIGH)  # Désactivation
+                etat_chauffages_local[resistance["ID"]] = 0
+
         print(f"heating_time : {heating_time}")
         #global nextious_maree
         if (datetime.now() > previous_maree + heating_time):            # Décalage du début de la marée BM de la valeur du temps de chauffe de la citerne à la marée précédente
