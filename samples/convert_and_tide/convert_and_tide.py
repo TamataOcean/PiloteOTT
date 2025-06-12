@@ -54,8 +54,8 @@ def etat_maree(fichier_json):
     # Obtenir la date et l'heure actuelles en UTC
     now = datetime.now(timezone.utc)
     # Modifier l'heure actuelle à une date et heure spécifique
-    now = datetime(2025, 4, 2, 6, 20, tzinfo=timezone.utc)  # Exemple: 2 avril 2025 à 04h20 UTC
-    print(f"now = {now}")
+    #now = datetime(2025, 4, 2, 6, 20, tzinfo=timezone.utc)  # Exemple: 2 avril 2025 à 04h20 UTC
+    sprint(f"now = {now}")
 
     # Extraire uniquement les horaires pour recherche rapide
     times = [m[0] for m in marees]
@@ -79,7 +79,8 @@ def etat_maree(fichier_json):
             print("Erreur dans les données des marées.")
 
 # Appel de la fonction pour convertir les données du fichier texte en JSON
-convertir_marées('LaRochelle_tides.txt', 'marees.json')
+#convertir_marées('LaRochelle_tides.txt', 'marees.json')
+convertir_marées('Maree-6h6h.txt', 'marees.json')
 
 # Appel de la fonction pour déterminer l'état de la marée à l'instant actuel
 etat_maree('marees.json')
